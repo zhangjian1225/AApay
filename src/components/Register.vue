@@ -3,16 +3,16 @@
       <div class="container">
           <div class="content">
               <div class="username commen">
-                  <p><span>账户</span><input type="text" /></p>
+                  <p><span>账户</span><input type="number" ref='userName'/></p>
               </div>
               <div class="userpassword commen">
-                  <p><span>密码</span><input type="password" /><label class="iconfont icon-biyan"></label></p>
-                  <p><span>确认</span><input type="password" /><label class="iconfont icon-biyan"></label></p>
+                  <p><span>密码</span><input type="password" ref='passWord'/><label class="iconfont icon-biyan"></label></p>
+                  <p><span>确认</span><input type="password" ref='passWordAgain'/><label class="iconfont icon-biyan"></label></p>
               </div>
               <div class="choose">
                   <p><input type="checkbox" /><span>直接登陆？</span><router-link to="/"><span class="now">立即登陆</span></router-link></p>
               </div>
-              <div class="login">立即注册</div>
+              <div class="login" @click='register'>立即注册</div>
           </div>
       </div>
   </div>
@@ -20,10 +20,20 @@
 
 <script>
 export default {
-  name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+    }
+  },
+  methods: {
+    register () {
+      let reg = /^1[34578]\d{9}$/
+      let userName = this.$refs.userName.value
+      let passWord = this.$refs.passWord.value
+      let passWordAgain = this.$refs.passWordAgain.value
+      console.log(reg)
+      console.log(userName)
+      console.log(passWordAgain)
+      console.log(passWord)
     }
   }
 }
