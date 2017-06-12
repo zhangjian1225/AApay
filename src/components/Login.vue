@@ -4,16 +4,16 @@
           <div class="userImg"><div class="iconfont icon-xiaohai icon"></div></div>
           <div class="content">
               <div class="username commen">
-                  <p><span>账户</span><input type="text" /></p>
+                  <p><span>账户</span><input type="number" ref="userName" /></p>
               </div>
               <div class="userpassword commen">
-                  <p><span>密码</span><input type="password" ref="show_hide"/><label class="iconfont icon-biyan" @click="showHide" ref="font"></label></p>
+                  <p><span>密码</span><input type="password" ref="show_hide" /><label class="iconfont icon-biyan" @click="showHide" ref="font"></label></p>
               </div>
               <div class="choose">
                   <p><input type="checkbox" /><span>记住密码？</span><router-link to="/Register"><span class="now">立即注册</span></router-link></p>
               </div>
               <div class="login" @click="alert">登陆</div>
-              <h4 class="alert">knkjjjhjhjh</h4>
+              <h4 class="alert" ref="warn"></h4>
           </div>
       </div>
   </div>
@@ -38,7 +38,33 @@ export default {
       }
       this.type = !this.type
     },
-    alert () {}
+    alert () {
+      const userName = this.$refs.userName.value
+      const passWord = this.$refs.show_hide.value
+      const warn = this.$refs.warn
+      if (userName === '' || passWord === '') {
+        warn.innerHTML = '账号密码不能为空!'
+        warn.classList.add('warn')
+        setTimeout(function () {
+          warn.classList.remove('warn')
+        }, 2500)
+      } else {
+        let option = {userName: userName, passWord: passWord}
+        this.$http.get('../../static/js/login.json', option).then(function (res) {
+          let data = JSON.parse(res.bodyText)
+          console.log(data.responseObject)
+          if (data.responseObject.code === '0') {
+            warn.innerHTML = '密码错误'
+            warn.classList.add('warn')
+            setTimeout(function () {
+              warn.classList.remove('warn')
+            }, 2500)
+          } else {
+            this.$router.push({path: '/Home'})
+          }
+        })
+      }
+    }
   }
 }
 </script>
@@ -147,10 +173,23 @@ export default {
   }
   .alert{
     width: 100%;
+    height: 0;
+    overflow: hidden;
     text-align:center;
-    line-height: 1.5rem;
     margin-top: 1rem;
-    color: red;
+    color:white;
+    background: rgba(0,0,0,.5);
   }
- 
+.warn{
+  animation: wran 1.5s forwards;
+}
+ @keyframes wran{
+    from{
+      height: 0
+    }
+    to{
+      height: 1.5rem;
+      line-height: 1.5rem;
+    }
+ }
 </style>
