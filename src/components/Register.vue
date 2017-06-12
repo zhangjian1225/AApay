@@ -13,6 +13,7 @@
                   <p><input type="checkbox" /><span>直接登陆？</span><router-link to="/"><span class="now">立即登陆</span></router-link></p>
               </div>
               <div class="login" @click='register'>立即注册</div>
+              <h4 class="alert" ref="warn"></h4>
           </div>
       </div>
   </div>
@@ -26,12 +27,21 @@ export default {
   },
   methods: {
     register () {
-      let reg = /^1[34578]\d{9}$/
+      let reg = /^1[34578]\d{9}$/g
       let userName = this.$refs.userName.value
       let passWord = this.$refs.passWord.value
       let passWordAgain = this.$refs.passWordAgain.value
-      console.log(reg)
-      console.log(userName)
+      const warn = this.$refs.warn
+      // 校验手机号码
+      if (reg.test(userName)) {
+        alert()
+      } else {
+        warn.innerHTML = '手机格式输入有错！'
+        warn.classList.add('warn')
+        setTimeout(function () {
+          warn.classList.remove('warn')
+        }, 2500)
+      }
       console.log(passWordAgain)
       console.log(passWord)
     }
@@ -141,4 +151,25 @@ export default {
     letter-spacing: .5rem;
     margin-top: 1rem;
   }
+  .alert{
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    text-align:center;
+    margin-top: 1rem;
+    color:#fff;
+    background: rgba(0,0,0,.5);
+  }
+.warn{
+  animation: wran 1.5s forwards;
+}
+ @keyframes wran{
+    from{
+      height: 0
+    }
+    to{
+      height: 1.5rem;
+      line-height: 1.5rem;
+    }
+ }
 </style>

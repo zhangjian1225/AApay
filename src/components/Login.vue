@@ -10,7 +10,7 @@
                   <p><span>密码</span><input type="password" ref="show_hide" /><label class="iconfont icon-biyan" @click="showHide" ref="font"></label></p>
               </div>
               <div class="choose">
-                  <p><input type="checkbox" /><span>记住密码？</span><router-link to="/Register"><span class="now">立即注册</span></router-link></p>
+                  <p><input type="checkbox" v-model='status'/><span>记住密码？</span><router-link to="/Register"><span class="now">立即注册</span></router-link></p>
               </div>
               <div class="login" @click="alert">登陆</div>
               <h4 class="alert" ref="warn"></h4>
@@ -24,7 +24,8 @@ export default {
   name: 'hello',
   data () {
     return {
-      type: true
+      type: true,
+      status: true
     }
   },
   methods: {
@@ -52,7 +53,6 @@ export default {
         let option = {userName: userName, passWord: passWord}
         this.$http.get('../../static/js/login.json', option).then(function (res) {
           let data = JSON.parse(res.bodyText)
-          console.log(data.responseObject)
           if (data.responseObject.code === '0') {
             warn.innerHTML = '密码错误'
             warn.classList.add('warn')
@@ -60,7 +60,16 @@ export default {
               warn.classList.remove('warn')
             }, 2500)
           } else {
-            this.$router.push({path: '/Home'})
+            // 判断是否记住密码
+            let check = this.status
+            if (check) {
+              window.localStorage.setItem('userName', userName)
+              window.localStorage.setItem('passWord', passWord)
+            } else {
+              window.localStorage.removeItem('userName')
+              window.localStorage.removeItem('passWord')
+            }
+            this.$router.push('/Home')
           }
         })
       }
@@ -150,7 +159,7 @@ export default {
         height: .5rem;
         padding-left: .2rem;
         position: relative;
-        top: -.05rem;
+        top: -.1rem;
       }
       .now{
         float: right;
