@@ -177,7 +177,7 @@ export default {
     overflow: hidden;
     text-align:center;
     margin-top: 1rem;
-    color:white;
+    color:#fff;
     background: rgba(0,0,0,.5);
   }
 .warn{
