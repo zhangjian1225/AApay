@@ -6,8 +6,8 @@
                   <p><span>账户</span><input type="number" ref='userName' placeholder="输入您的手机号码" /></p>
               </div>
               <div class="userpassword commen">
-                  <p><span>密码</span><input type="password" placeholder="密码6-12位字母数字下划线" ref='passWord'/><label class="iconfont icon-biyan"></label></p>
-                  <p><span>确认</span><input type="password" placeholder="确认您的密码" ref='passWordAgain'/><label class="iconfont icon-biyan"></label></p>
+                  <p><span>密码</span><input type="password" placeholder="密码6-12位字母数字下划线" ref='passWord'/><label class="iconfont icon-biyan" ref="font" @click='showHide("passWord","font")'></label></p>
+                  <p><span>确认</span><input type="password" placeholder="确认您的密码" ref='passWordAgain'/><label class="iconfont icon-biyan" ref="fontAgain" @click='showHide("passWordAgain","fontAgain")'></label></p>
               </div>
               <div class="choose">
                   <p><input type="checkbox" v-model='choose'/><span>直接登陆？</span><router-link to="/"><span class="now">立即登陆</span></router-link></p>
@@ -23,10 +23,21 @@
 export default {
   data () {
     return {
-      choose: true
+      choose: true,
+      type: true
     }
   },
   methods: {
+    showHide (opt, ele) {
+      if (this.type) {
+        this.$refs[opt].setAttribute('type', 'text')
+        this.$refs[ele].setAttribute('class', 'iconfont icon-yan')
+      } else {
+        this.$refs[opt].setAttribute('type', 'password')
+        this.$refs[ele].setAttribute('class', 'iconfont icon-biyan')
+      }
+      this.type = !this.type
+    },
     register () {
       let regPhone = /^1[34578]\d{9}$/g // 手机正则
       let regPassword = /^[a-zA-Z\d_]{6,12}$/g
@@ -47,10 +58,10 @@ export default {
             if (passWord === passWordAgain) { // 密码进行比较
               let option = {userName: userName, passWord: passWord}
               if (this.choose) { // 注册成功后直接登陆
-                this.http(warn, option)
+                this.ajaxs(warn, option)
                 this.$router.push('/Home')
               } else { // 只是注册
-                this.http(warn, option)
+                this.ajaxs(warn, option)
               }
             } else { // 密码不一致
               warn.innerHTML = '两次密码输入不一致'
@@ -74,25 +85,25 @@ export default {
           }, 2500)
         }
       }
+    },
+    ajaxs (warn, option) {
+      this.$http.get('../../static/js/login.json', option).then(function (res) {
+        let data = JSON.parse(res.bodyText)
+        if (data.responseObject.code === '0') {
+          warn.innerHTML = '注册失败请重新注册'
+          warn.classList.add('warn')
+          setTimeout(function () {
+            warn.classList.remove('warn')
+          }, 2500)
+        } else {
+          warn.innerHTML = '注册成功'
+          warn.classList.add('warn')
+          setTimeout(function () {
+            warn.classList.remove('warn')
+          }, 2500)
+        }
+      })
     }
-  },
-  http (warn, option) {
-    this.$http.get('../../static/js/login.json', option).then(function (res) {
-      let data = JSON.parse(res.bodyText)
-      if (data.responseObject.code === '0') {
-        warn.innerHTML = '注册失败请重新注册'
-        warn.classList.add('warn')
-        setTimeout(function () {
-          warn.classList.remove('warn')
-        }, 2500)
-      } else {
-        warn.innerHTML = '注册成功'
-        warn.classList.add('warn')
-        setTimeout(function () {
-          warn.classList.remove('warn')
-        }, 2500)
-      }
-    })
   }
 }
 </script>

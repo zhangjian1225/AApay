@@ -88,8 +88,7 @@ export default {
   .container{
     width: 100%;
     position: absolute;
-    top: 50%;
-    margin-top: -12rem;
+    top: 15%;
   }
   .userImg{
     width:4rem;
