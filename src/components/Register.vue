@@ -32,9 +32,11 @@ export default {
       if (this.type) {
         this.$refs[opt].setAttribute('type', 'text')
         this.$refs[ele].setAttribute('class', 'iconfont icon-yan')
+        this.$refs.font.style.color = 'black'
       } else {
         this.$refs[opt].setAttribute('type', 'password')
         this.$refs[ele].setAttribute('class', 'iconfont icon-biyan')
+        this.$refs.font.style.color = '#666'
       }
       this.type = !this.type
     },
@@ -59,7 +61,7 @@ export default {
               let option = {userName: userName, passWord: passWord}
               if (this.choose) { // 注册成功后直接登陆
                 this.ajaxs(warn, option)
-                this.$router.push('/Home')
+                this.$router.push('/Write')
               } else { // 只是注册
                 this.ajaxs(warn, option)
               }

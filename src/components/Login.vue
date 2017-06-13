@@ -33,9 +33,11 @@ export default {
       if (this.type) {
         this.$refs.show_hide.setAttribute('type', 'text')
         this.$refs.font.setAttribute('class', 'iconfont icon-yan')
+        this.$refs.font.style.color = 'black'
       } else {
         this.$refs.show_hide.setAttribute('type', 'password')
         this.$refs.font.setAttribute('class', 'iconfont icon-biyan')
+        this.$refs.font.style.color = '#666'
       }
       this.type = !this.type
     },
@@ -69,10 +71,19 @@ export default {
               window.localStorage.removeItem('userName')
               window.localStorage.removeItem('passWord')
             }
-            this.$router.push('/Home')
+            this.$router.push('/Write')
           }
         })
       }
+    }
+  },
+  mounted () {
+    if (window.localStorage.getItem('userName') && window.localStorage.getItem('passWord')) {
+      this.$router.push('/Write')
+      let option = {userName: window.localStorage.getItem('userName'), passWord: window.localStorage.getItem('passWord')}
+      this.$http.get('../../static/js/login.json', option).then(function (res) {
+        console.log(1)
+      })
     }
   }
 }

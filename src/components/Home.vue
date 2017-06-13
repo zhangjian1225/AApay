@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <header>
-            <p><span>{{title}}</span><label class="iconfont icon-xuanzechuzhi01"></label></p>
+            <div><span>{{title}}</span><label class="iconfont icon-xuanzechuzhi01" @click="outList"></label><p ref="out" @click="out">退出</p></div>
         </header>
         <section>
             <router-view></router-view>
@@ -29,6 +29,15 @@ export default {
         this.$refs[pash].setAttribute('class', '')
         this.title = title
       }
+    },
+    outList () {
+      this.$refs.out.classList.add('out')
+    },
+    out () { // 退出
+      this.$refs.out.classList.remove('out')
+      window.localStorage.removeItem('userName')
+      window.localStorage.removeItem('passWord')
+      this.$router.push('/')
     }
   }
 }
@@ -52,7 +61,8 @@ export default {
     height: 2rem;
     background:linear-gradient(to bottom right,#ccc, #fff);
     line-height: 2rem;
-    p{
+    div{
+      position: relative;
       span{
         font-weight: bold;
         font-family: "Arial";
@@ -65,6 +75,27 @@ export default {
         font-size: 1.5rem;
         color: purple;
         margin-right: .4rem;
+      }
+      p{
+        width: 2rem;
+        height: 0;
+        overflow: hidden;
+        position: absolute;
+        font-size: .8rem;
+        text-align: center;
+        right: 0;
+        background: linear-gradient(to bottom right,#ccc, #fff);
+      }
+      p.out{
+        animation: out 1s forwards;
+      }
+      @keyframes out{
+        from{
+          height: 0
+        }
+        to{
+          height: 3rem;
+        }
       }
     }
   }
