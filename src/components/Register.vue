@@ -3,14 +3,14 @@
       <div class="container">
           <div class="content">
               <div class="username commen">
-                  <p><span>账户</span><input type="number" ref='userName'/></p>
+                  <p><span>账户</span><input type="number" ref='userName' placeholder="输入您的手机号码" /></p>
               </div>
               <div class="userpassword commen">
-                  <p><span>密码</span><input type="password" ref='passWord'/><label class="iconfont icon-biyan"></label></p>
-                  <p><span>确认</span><input type="password" ref='passWordAgain'/><label class="iconfont icon-biyan"></label></p>
+                  <p><span>密码</span><input type="password" placeholder="密码6-12位字母数字下划线" ref='passWord'/><label class="iconfont icon-biyan"></label></p>
+                  <p><span>确认</span><input type="password" placeholder="确认您的密码" ref='passWordAgain'/><label class="iconfont icon-biyan"></label></p>
               </div>
               <div class="choose">
-                  <p><input type="checkbox" /><span>直接登陆？</span><router-link to="/"><span class="now">立即登陆</span></router-link></p>
+                  <p><input type="checkbox" v-model='choose'/><span>直接登陆？</span><router-link to="/"><span class="now">立即登陆</span></router-link></p>
               </div>
               <div class="login" @click='register'>立即注册</div>
               <h4 class="alert" ref="warn"></h4>
@@ -23,28 +23,76 @@
 export default {
   data () {
     return {
+      choose: true
     }
   },
   methods: {
     register () {
-      let reg = /^1[34578]\d{9}$/g
+      let regPhone = /^1[34578]\d{9}$/g // 手机正则
+      let regPassword = /^[a-zA-Z\d_]{6,12}$/g
       let userName = this.$refs.userName.value
       let passWord = this.$refs.passWord.value
       let passWordAgain = this.$refs.passWordAgain.value
       const warn = this.$refs.warn
       // 校验手机号码
-      if (reg.test(userName)) {
-        alert()
+      if (userName === '' || passWord === '' || passWordAgain === '') { // 填写为空
+        warn.innerHTML = '密码或账号未填写'
+        warn.classList.add('warn')
+        setTimeout(function () {
+          warn.classList.remove('warn')
+        }, 2500)
       } else {
-        warn.innerHTML = '手机格式输入有错！'
+        if (regPhone.test(userName)) {
+          if (regPassword.test(passWord)) { // 密码为6-12为字母数字
+            if (passWord === passWordAgain) { // 密码进行比较
+              let option = {userName: userName, passWord: passWord}
+              if (this.choose) { // 注册成功后直接登陆
+                this.http(warn, option)
+                this.$router.push('/Home')
+              } else { // 只是注册
+                this.http(warn, option)
+              }
+            } else { // 密码不一致
+              warn.innerHTML = '两次密码输入不一致'
+              warn.classList.add('warn')
+              setTimeout(function () {
+                warn.classList.remove('warn')
+              }, 2500)
+            }
+          } else {
+            warn.innerHTML = '输入密码不符合规格'
+            warn.classList.add('warn')
+            setTimeout(function () {
+              warn.classList.remove('warn')
+            }, 2500)
+          }
+        } else { // 手机号码不正确
+          warn.innerHTML = '手机格式输入有错！'
+          warn.classList.add('warn')
+          setTimeout(function () {
+            warn.classList.remove('warn')
+          }, 2500)
+        }
+      }
+    }
+  },
+  http (warn, option) {
+    this.$http.get('../../static/js/login.json', option).then(function (res) {
+      let data = JSON.parse(res.bodyText)
+      if (data.responseObject.code === '0') {
+        warn.innerHTML = '注册失败请重新注册'
+        warn.classList.add('warn')
+        setTimeout(function () {
+          warn.classList.remove('warn')
+        }, 2500)
+      } else {
+        warn.innerHTML = '注册成功'
         warn.classList.add('warn')
         setTimeout(function () {
           warn.classList.remove('warn')
         }, 2500)
       }
-      console.log(passWordAgain)
-      console.log(passWord)
-    }
+    })
   }
 }
 </script>
@@ -113,6 +161,7 @@ export default {
       background: none;
       border: none;
       outline: none;
+      font-size: .8rem;
     }
   }
   .choose{

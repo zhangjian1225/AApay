@@ -4,10 +4,10 @@
           <div class="userImg"><div class="iconfont icon-xiaohai icon"></div></div>
           <div class="content">
               <div class="username commen">
-                  <p><span>账户</span><input type="number" ref="userName" /></p>
+                  <p><span>账户</span><input type="number" ref="userName" placeholder="输入您的账号" /></p>
               </div>
               <div class="userpassword commen">
-                  <p><span>密码</span><input type="password" ref="show_hide" /><label class="iconfont icon-biyan" @click="showHide" ref="font"></label></p>
+                  <p><span>密码</span><input type="password" ref="show_hide" placeholder="输入您的密码" /><label class="iconfont icon-biyan" @click="showHide" ref="font"></label></p>
               </div>
               <div class="choose">
                   <p><input type="checkbox" v-model='status'/><span>记住密码？</span><router-link to="/Register"><span class="now">立即注册</span></router-link></p>
@@ -142,6 +142,7 @@ export default {
       background: none;
       border: none;
       outline: none;
+      font-size: .8rem;
     }
   }
   .choose{
