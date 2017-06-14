@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1497336666419'); /* IE9*/
-  src: url('iconfont.eot?t=1497336666419#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1497336666419') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1497336666419') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1497336666419#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1497423568416'); /* IE9*/
+  src: url('iconfont.eot?t=1497423568416#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1497423568416') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1497423568416') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1497423568416#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -18,6 +18,8 @@
 .icon-shezhi:before { content: "\f0003"; }
 
 .icon-shezhi1:before { content: "\e65a"; }
+
+.icon-delete:before { content: "\e69d"; }
 
 .icon-edit:before { content: "\e69e"; }
 

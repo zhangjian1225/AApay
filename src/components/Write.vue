@@ -3,6 +3,7 @@
     <div class="container">
       <div class="totle">
         <div class="list" v-for="(val,i) in person" >
+            <span class="iconfont icon-delete" @click="remove(i)"></span>
             <dl v-if="val.sex=='girl'">
               <dt><img src="../assets/girl.png"></dt>
               <dd>{{val.name}}</dd>
@@ -30,6 +31,15 @@
       </div>
       <div class="say" ref="warn"></div>
     </div>
+    <div class="mask" ref='mask'>
+          <div class="content">
+            <p class="title_content">您确定要删除吗？</p>
+            <p class="choose_content">
+              <span class="yes" ref='yes' @click="enter">确定</span>
+              <span class="no" ref='no' @click="pickOut">取消</span>
+            </p>
+          </div>
+      </div>
   </div>
 </template>
 
@@ -47,6 +57,9 @@ export default {
     }
   },
   methods: {
+    $ (op) { // 封装获取元素方法
+      return this.$refs[op]
+    },
     addList () {
       this.$refs.addList.classList.add('unflod')
       this.$refs.addList.classList.remove('up')
@@ -70,6 +83,16 @@ export default {
         this.ajaxs('../../static/js/login.json', option, this.addArr)
       }
     },
+    remove (id) {
+      this.$('mask').style.display = 'block'
+    },
+    enter (id) {
+      this.person.splice(id, 1)
+      this.$('mask').style.display = 'none'
+    },
+    pickOut () {
+      this.$('mask').style.display = 'none'
+    },
     ajaxs (url, option, fn) {
       this.$http.get(url, option).then(function (res) {
         fn()
@@ -86,6 +109,7 @@ export default {
   .container{
     width: 100%;
     height: 100%;
+    position: relative;
     .totle{
       width: 100%;
       height: auto;
@@ -99,6 +123,14 @@ export default {
         margin-left: .2rem;
         margin-top: .2rem;
         background: linear-gradient(to bottom right, purple , pink );
+        position: relative;
+        span{
+          position: absolute;
+          right: .1rem;
+          top: .2rem;
+          font-weight: border;
+          color: white;
+        }
         dl{
           width: 100%;
           height:100%;
@@ -239,7 +271,7 @@ export default {
       text-align:center;
       margin-top: 1rem;
       color:#fff;
-      background: rgba(0,0,0,.5)
+      background: rgba(0,0,0,1)
     }
     .say.warn{
       animation: wran 1.5s forwards;
@@ -253,5 +285,48 @@ export default {
           line-height: 1.5rem;
         }
      }
+  }
+  .mask{
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, .8);
+    .content{
+      width: 15rem;
+      height: 5rem;
+      background: linear-gradient(to bottom right, purple , #666 );
+      border-radius: .5rem;
+      border: 1px solid #fff;
+      margin: auto;
+      margin-top: 10rem;
+      .title_content{
+        height:3rem;
+        width: 100%;
+        line-height: 3rem;
+        text-align: center;
+        border-bottom: 1px solid #666;
+        font-size: .8rem;
+        color: #fff;
+      }
+      .choose_content{
+        width: 100%;
+        height: 2rem;
+        display: flex;
+        span{
+          flex: 1;
+          width: 100%;
+          height: 2rem;
+          text-align: center;
+          line-height: 2rem;
+          color: #fff;
+        }
+        .no{
+          border-left: 1px solid #666;
+        }
+      }
+    }
   }
 </style>
