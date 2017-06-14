@@ -1,12 +1,12 @@
 <template>
-    <div class="container">
+    <div class="container" ref="body">
         <header>
-            <div><span>{{title}}</span><label class="iconfont icon-xuanzechuzhi01" @click="outList"></label><p ref="out" @click="out">退出</p></div>
+            <div><span @click="removeOut">{{title}}</span><label class="iconfont icon-xuanzechuzhi01" @click="outList"></label><p ref="out" @click="out">退出</p></div>
         </header>
-        <section>
+        <section @click="removeOut">
             <router-view></router-view>
         </section>
-        <footer>
+        <footer @click="removeOut">
             <ul>
                 <li ref="write" @click="cut('write','list','记账')" class="show"><router-link to="/Write"><span class="iconfont icon-edit"></span></router-link></li>
                 <li ref="list" @click="cut('list','write','账单')"><router-link to="/List"><span class="iconfont icon-jian"></span></router-link></li>
@@ -19,7 +19,8 @@
 export default {
   data () {
     return {
-      title: '记账'
+      title: '记账',
+      down: true
     }
   },
   methods: {
@@ -31,13 +32,28 @@ export default {
       }
     },
     outList () {
-      this.$refs.out.classList.add('out')
+      if (this.down) {
+        this.$refs.out.classList.add('out')
+        this.$refs.out.classList.remove('pick')
+      } else {
+        this.$refs.out.classList.add('pick')
+      }
+      this.down = !this.down
     },
-    out () { // 退出
+    out (e) { // 退出
+      let el = e || window.event
+      el.stopPropagation()
       this.$refs.out.classList.remove('out')
       window.localStorage.removeItem('userName')
       window.localStorage.removeItem('passWord')
       this.$router.push('/')
+    },
+    removeOut () {
+      if (this.down) {
+        this.$refs.out.classList.remove('out')
+      } else {
+        this.$refs.out.classList.add('pick')
+      }
     }
   }
 }
@@ -50,7 +66,6 @@ export default {
   .container{
     height:100%;
     width: 100%;
-    overflow: auto;
     background: url("../assets/home_bg.jpg") no-repeat;
     background-size: cover;
     display: flex;
@@ -68,7 +83,10 @@ export default {
         font-family: "Arial";
         letter-spacing: 1em;
         color: purple;
-        margin-left: 8rem;
+        width: 17rem;
+        display: inline-block;
+        text-align: center;
+        padding-left: 2.5rem;
       }
       label{
         float:right;
@@ -84,10 +102,14 @@ export default {
         font-size: .8rem;
         text-align: center;
         right: 0;
+        z-index: 100;
         background: linear-gradient(to bottom right,#ccc, #fff);
       }
       p.out{
         animation: out 1s forwards;
+      }
+      p.pick{
+        animation: pick 1s forwards;
       }
       @keyframes out{
         from{
@@ -95,6 +117,14 @@ export default {
         }
         to{
           height: 3rem;
+        }
+      }
+      @keyframes pick{
+        from{
+          height: 3rem;
+        }
+        to{
+          height: 0rem;
         }
       }
     }

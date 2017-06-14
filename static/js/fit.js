@@ -6,7 +6,7 @@
 		window.clientWidth = docEl.clientWidth;
 		window.clientHeight = docEl.clientHeight;
 		var aspectRatio = window.clientWidth/window.clientHeight;
-		if(aspectRatio>1920/1080){
+		if(aspectRatio>1920/1028){
 			docEl.style.fontSize = 100*(window.clientHeight/1028)+"px";
 			window.base = 100*(window.clientHeight/1028)
 		}else{
