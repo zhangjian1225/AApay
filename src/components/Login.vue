@@ -81,9 +81,10 @@ export default {
     if (window.localStorage.getItem('userName') && window.localStorage.getItem('passWord')) {
       this.$router.push('/Write')
       let option = {userName: window.localStorage.getItem('userName'), passWord: window.localStorage.getItem('passWord')}
-      this.$http.get('../../static/js/login.json', option).then(function (res) {
+      console.log(option)
+      /* this.$http.get('../../static/js/login.json', option).then(function (res) {
         console.log(1)
-      })
+      }) */
     }
   }
 }
