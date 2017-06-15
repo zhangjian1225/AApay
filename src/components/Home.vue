@@ -48,12 +48,13 @@ export default {
       window.localStorage.removeItem('passWord')
       this.$router.push('/')
     },
-    removeOut () {
+    removeOut () { // 退出收起
       if (this.down) {
         this.$refs.out.classList.remove('out')
       } else {
         this.$refs.out.classList.add('pick')
       }
+      this.down = !this.down
     }
   }
 }
@@ -133,6 +134,7 @@ export default {
     flex: 1;
     width: 100%;
     height: 100%;
+    overflow: auto;
   }
   footer{
     width: 100%;

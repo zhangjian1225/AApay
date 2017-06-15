@@ -2,13 +2,13 @@
   <div class="hello">
     <div class="container">
       <div class="totle">
-        <div class="list" v-for="(val,i) in person" >
-            <span class="iconfont icon-delete" @click="remove(i)"></span>
-            <dl v-if="val.sex=='girl'">
+        <div class="list" v-for="(val,i) in person">
+            <span class="iconfont icon-delete" @click="remove(val.id)"></span>
+            <dl v-if="val.sex=='girl'" @click="rember(val.id)">
               <dt><img src="../assets/girl.png"></dt>
               <dd>{{val.name}}</dd>
             </dl>
-            <dl v-if="val.sex=='boy'">
+            <dl v-if="val.sex=='boy'" @click="rember(val.id)">
               <dt><img src="../assets/boy.png"></dt>
               <dd>{{val.name}}</dd>
             </dl>
@@ -20,7 +20,13 @@
           </dl>
         </div>
       </div>
-      <div class="write"></div>
+      <div class="write" ref="write">
+        <span @click="rember_out" ref="write_out">X</span>
+        <p>时间：<input type="date"/></p>
+        <p>物品：<input type="text"/></p>
+        <p>金额：<input type="text" placeholder="金额为小数点后一位" @keydown="testNum" @click="clean" ref="Num"/></p>
+        <p><button>确定</button></p>
+      </div>
       <div class="add" ref="addList">
         <div class="auto">
             <span @click="close">X</span>
@@ -49,10 +55,11 @@ export default {
   data () {
     return {
       sex: 'boy',
+      id: '',
       person: [
-        {name: '张颖', sex: 'girl'},
-        {name: '张健', sex: 'boy'},
-        {name: '张蕊', sex: 'girl'}
+        {name: '张颖', sex: 'girl', id: '1'},
+        {name: '张健', sex: 'boy', id: '2'},
+        {name: '张蕊', sex: 'girl', id: '3'}
       ]
     }
   },
@@ -61,14 +68,15 @@ export default {
       return this.$refs[op]
     },
     addList () {
-      this.$refs.addList.classList.add('unflod')
-      this.$refs.addList.classList.remove('up')
+      this.$('addList').classList.add('unflod')
+      this.$('addList').classList.remove('up')
+      this.$('write').classList.remove('write_unflod')
     },
     close () {
-      this.$refs.addList.classList.add('up')
-      this.$refs.addList.classList.remove('unflod')
+      this.$('addList').classList.add('up')
+      this.$('addList').classList.remove('unflod')
     },
-    add () {
+    add () { // 添加用户
       let value = this.$refs.name.value
       let warn = this.$refs.warn
       if (value === '') {
@@ -78,28 +86,67 @@ export default {
           warn.classList.remove('warn')
         }, 2500)
       } else {
-        let option = {name: value, sex: this.sex}
-        console.log(option)
-        this.ajaxs('../../static/js/login.json', option, this.addArr)
+        let option = {name: value, sex: this.sex, id: this.person.length + 1}
+        this.ajaxs('../../static/js/write.json', option, this.addArr, warn)
       }
     },
     remove (id) {
       this.$('mask').style.display = 'block'
+      this.id = id
+      this.$('addList').classList.remove('unflod')
+      this.$('write').classList.remove('write_unflod')
     },
-    enter (id) {
-      this.person.splice(id, 1)
+    enter () { // 删除的确定按钮
+      let id = this.id
+      for (var i = 0; i < this.person.length; i++) {
+        if (this.person[i].id === id) {
+          this.person.splice(i, 1)
+        }
+      }
       this.$('mask').style.display = 'none'
     },
-    pickOut () {
+    pickOut () { // 删除的取消
       this.$('mask').style.display = 'none'
     },
-    ajaxs (url, option, fn) {
+    ajaxs (url, option, fn, warn) {
       this.$http.get(url, option).then(function (res) {
-        fn()
+        let data = JSON.parse(res.bodyText)
+        if (data.responseObject.code === '1') {
+          warn.innerHTML = '注册成功'
+          warn.classList.add('warn')
+          fn(option)
+        } else {
+          warn.innerHTML = '注册失败'
+          warn.classList.add('warn')
+        }
+        let that = this
+        setTimeout(function () {
+          warn.classList.remove('warn')
+          that.$('addList').classList.add('up')
+          that.$('addList').classList.remove('unflod')
+        }, 2500)
       })
     },
-    addArr () {
-      alert()
+    addArr (option) {
+      this.person.push(option) // 无接口写法
+      // 有接口的话发请求
+    },
+    rember () { // 出现记账框
+      this.$('write').classList.add('write_unflod')
+      this.$('write').classList.remove('write_up')
+      this.$('addList').classList.remove('unflod')
+    },
+    rember_out () { // 出现记账框
+      this.$('write').classList.add('write_up')
+      this.$('write').classList.remove('write_unflod')
+    },
+    testNum () { // 判断输入金额是否正确
+      if (!/^\d*\.{0,1}\d{0,1}$/.test(this.$('Num').value) && window.event.keyCode !== 8) {
+        this.$('Num').value = '输入金额格式不正确'
+      }
+    },
+    clean () {
+      this.$('Num').value = ''
     }
   }
 }
@@ -176,7 +223,6 @@ export default {
     .add{
       width: 98.8%;
       height: 0rem;
-      background: blue;
       float: left;
       margin-left: .1rem;
       background: linear-gradient(to bottom right, #fff , pink );
@@ -223,7 +269,6 @@ export default {
           margin: .5rem auto;
           font-size: .8rem;
           border: 1px solid #fff;
-
         }
       }
     }
@@ -249,21 +294,69 @@ export default {
         height: 8rem;
       }
     } 
-    /* .auto{
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom:0;
-      right:0;
-      margin: auto;
-    } */
-    /* .add{
+    .write{
       width: 98.8%;
-      height: 20px;
-      background: red;
+      height: 0rem;
+      overflow: hidden;
+      background: linear-gradient(to bottom right, #fff , pink );
       float: left;
       margin-left: .1rem;
-    } */
+      position: relative;
+      span{
+        position: absolute;
+        right: 0;
+        top: 0rem;
+        height: 1rem;
+        width: 1rem;
+        background: #fff;
+        text-align: center;
+        line-height: 1rem;
+      }
+      p{
+        margin-top: .8rem;
+        margin-left: .2rem
+      }
+      input{
+        height: 1.5rem;
+        padding-left: .2rem;
+        font-size: .8rem;
+        vertical-align:middle;
+        color:purple;
+        border-color:rgba(141,39,142,.75); 
+        box-shadow:0 0 18px rgba(111,1,32,3);
+      }
+      button{
+          width: 3rem;
+          height: 1.5rem;
+          color: purple;
+          background: linear-gradient(to bottom right, #fff , #666 );
+          margin: .5rem auto;
+          font-size: .8rem;
+          border: 1px solid #fff;
+        }
+    }
+    .write.write_unflod{
+      animation: write_unflod .5s forwards
+    }
+    .write.write_up{
+      animation: write_up .5s forwards
+    }
+    @keyframes write_up{
+      0%{
+        height: 10.5rem;
+      }
+      100%{
+        height: 0rem;
+      }
+    } 
+    @keyframes write_unflod{
+      0%{
+        height: 0;
+      }
+      100%{
+        height: 10.5rem;
+      }
+    } 
     .say{
       width: 100%;
       height: 0;
