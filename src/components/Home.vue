@@ -54,7 +54,7 @@ export default {
       } else {
         this.$refs.out.classList.add('pick')
       }
-      this.down = !this.down
+      this.down = true
     }
   }
 }
